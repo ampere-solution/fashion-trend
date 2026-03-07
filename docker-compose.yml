@@ -1,0 +1,61 @@
+services:
+  app:
+    cpuset: "0-95"
+    image: tinguyen2024/fashion-trend-analysis:v1.2
+    #build:
+    #  context: .
+    #  dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./videos:/app/videos:ro
+      - ./models:/app/models:ro
+      - tracking-data:/data
+    environment:
+      - DB_PATH=/data/tracking.db
+      - VIDEOS_DIR=/app/videos
+      - MODELS_DIR=/app/models
+      - LLM_THREADS=16
+      - LLM_THREADS_BATCH=16
+      - LLM_CTX=100000
+      - LLM_BATCH=2048
+      - VLM_INSTANCES=4
+      - VLM_CPUSET_0=0-15
+      - VLM_THREADS_0=16
+      - VLM_CPUSET_1=16-31
+      - VLM_THREADS_1=16
+      - VLM_CPUSET_2=32-47
+      - VLM_THREADS_2=16
+      - VLM_CPUSET_3=48-63
+      - VLM_THREADS_3=16
+      - VLM_CPUSET_4=64-79
+      - VLM_THREADS_4=16
+      - VLM_CTX=1024
+      - VLM_INTERVAL=0
+      - VLM_PORT=8012
+      - AUTO_LOAD_LLM=Llama-3.2-3B-Instruct-Q8R16.gguf
+      - AUTO_LOAD_VLM=qwen-2.5-vl-3b-instruct-Q8R16.gguf
+      - AUTO_START_VIDEO=westfield-mall.mp4
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:11.4.0
+    ports:
+      - "4000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+      - GF_INSTALL_PLUGINS=simpod-json-datasource
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/var/lib/grafana/dashboards/overview.json
+    depends_on:
+      - app
+    restart: unless-stopped
+
+volumes:
+  tracking-data:
+  grafana-data:
