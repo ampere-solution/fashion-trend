@@ -119,11 +119,101 @@ FrontEnd:
 - SocketIO client: 4.7.0
 - Vanilla HTM/CSS
 
+**Demo Deployment**
+- Install docker 
+- Git clone from the repo: GitHub - ampere-solution/fashion-trend 
+- Download the Ampere optimized model from Hugging Face.
+   - Llama-3.2-3B-Instruct-Q8R16.gguf
+   - qwen-2.5-vl-3b-instruct-Q8R16.gguf
+   - mmproj-qwen-2.5-vl-3b-instruct-Q8_0.gguf
+- Place the model inside the models/ directory.
+- Place the videos inside the videos/ directory.
+- docker-compose.yaml:
+```yaml
+services:
+  app:
+    cpuset: "0-95"
+    image: tinguyen2024/fashion-trend-analysis:v1.1a
+    #build:
+    #  context: .
+    #  dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./videos:/app/videos:ro
+      - ./models:/app/models:ro
+      - tracking-data:/data
+    environment:
+      - DB_PATH=/data/tracking.db
+      - VIDEOS_DIR=/app/videos
+      - MODELS_DIR=/app/models
+      - LLM_THREADS=16
+      - LLM_THREADS_BATCH=16
+      - LLM_CTX=100000
+      - LLM_BATCH=2048
+      - VLM_INSTANCES=4
+      - VLM_CPUSET_0=0-15
+      - VLM_THREADS_0=16
+      - VLM_CPUSET_1=16-31
+      - VLM_THREADS_1=16
+      - VLM_CPUSET_2=32-47
+      - VLM_THREADS_2=16
+      - VLM_CPUSET_3=48-63
+      - VLM_THREADS_3=16
+      - VLM_CPUSET_4=64-79
+      - VLM_THREADS_4=16
+      - VLM_CTX=1024
+      - VLM_INTERVAL=0
+      - VLM_PORT=8012
+      - AUTO_LOAD_LLM=Llama-3.2-3B-Instruct-Q8R16.gguf
+      - AUTO_LOAD_VLM=qwen-2.5-vl-3b-instruct-Q8R16.gguf
+      - AUTO_START_VIDEO=westfield-mall.mp4
+    restart: unless-stopped
 
+  grafana:
+    image: grafana/grafana:11.4.0
+    ports:
+      - "4000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+      - GF_INSTALL_PLUGINS=simpod-json-datasource
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/var/lib/grafana/dashboards/overview.json
+    depends_on:
+      - app
+    restart: unless-stopped
 
+volumes:
+  tracking-data:
+  grafana-data:
+```
+- Run the setup script:  ./start_app.sh.  The script will pull the demo docker image from docker hub, setup the environments neccessary for this demo.
+- Open the demo at http://< your_ip_address >:8000
 
+**Demo Talking Points**
+- This is a real time fashion analytics platform - it watches a video feed and, person by person, tells you their gender, age group, hair length, what they’re wearing and the colors - all running locally on Arm64 Ampere processors.  Three AI models are running simultaneously: YOLOv11 for detection and tracking, a vision language model (VLM) for person analysis, and a local LLM you can chat with about what it is seeing.
+- Live video feed - each person gets #track_id + gender, color-coded:  pink for female, blue for male, and gray for unknown. Labels glide smoothly because we apply exponentially moving average smoothing on positions - no jitter even as people move.  Feed is capped at 23.97fps for consistent, broadcast-smooth playback.
+- The AI person analysis show the 5 currently-visible people.  Each row is the VLM’s read on that person:  gender, age, hair, clothing description.
+- Three architecture cards with 3-state status (not load, idle, actively inferring).  You can literally watch YOLO inference time in milliseconds, LLM TTFT, and VLM throughput tick in real time.
+- Gender is hard from a single video crop, so we built a multi-layer classification pipeline.  The VLM is prompted to look at face, body shape, hair, and clothing cues.  The we ran clothing based overrides (a dress or skirt is definitive), facial-hair overrides, etc.
+- To keep up in real time, we run 5 parallel VLM server instances, each pinned to its own 16 CPU cores via taskset.  Worker threads dedupe so no two instances analyze the same person. This makes per person VLM analysis feasible at video speed.
+- You can ask local LLM questions about the scene - i.e: how many women in the last 5 minutes, what colors are the most common? and answered from the live RAG context built from tracking data. 
 
-
+**Stop the Demo**
+- Graceful stop
+```bash
+# stop_app.sh
+$ docker compose stop
+```
+- Remove the demo
+```bash
+$ docker compose down
+```
 
 
 --------------------
