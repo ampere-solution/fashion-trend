@@ -1,5 +1,5 @@
-#Fashion Trend Analysis- Multimodal
-##User Interface
+# Fashion Trend Analysis- Multimodal
+## User Interface
 
 
 
