@@ -1,3 +1,12 @@
+#Fashion Trend Analysis- Multimodal
+##User Interface
+
+
+
+
+
+
+--------------------
 # fashion-trend-docker
 ### Getting Started
 1. **Download** the Ampere optimized model from [Hugging Face](https://huggingface.co).
