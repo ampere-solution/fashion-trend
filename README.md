@@ -90,9 +90,34 @@ A single Arm64 CPU server runs production grade, multi models, real time AI visi
    - Generality proof:  works on any input video in /app/videos
  
 ## Running the Demo
+**Recommended Resources**
+- Minimum: 96 cores. Recommended: 96+ cores
+- Minimum: 64GB RAM. Recommended: 64+ GB RAM
+- Minimum: 20GB disk space. Recommended: 100+ GB (multiple models, large models)
 
+**Software Stack**
+- Base image: amperecomputingai/llama.cpp:3.4.2-ampereone
+- Python: 3.x
+- Build tool: build-essential, cmake
 
+Backend:
+- Flask: 3.1.0
+- Flask-SocketIO: 5.4.1
+- simple-websocket: 1.1.0
+- requests: 2.31.0
+- putils: 5.9.0
 
+AI:
+- YOLOv11n: 8.3.0
+- ByteTrack: 0.5.2
+- OpenCV: 4.9.0
+- llama-cpp-python: 0.3.16: Llama-3.2-3B-Instrucyt-Q8R16 fashion Q&A
+- llama-server: Qwen2.5-VL-3B-Q8R16 person classification
+
+FrontEnd:
+- chart.js: 4.4.1
+- SocketIO client: 4.7.0
+- Vanilla HTM/CSS
 
 
 
