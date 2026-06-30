@@ -34,6 +34,46 @@ Alongside, a Fashion AI Assistant chat panel lets you ask natural-language quest
    - Computer vision engineering- reference architecture for multi-model pipelines (YOLO + VLM + LLM)
    - Solution architects - demo to show clients what’s achievable with open source models on Arm64 processors.
 
+## Key Message - What are we trying to convince of?
+**Core message**
+A single Arm64 CPU server runs production grade, multi models, real time AI vision, LLM workloads locally, observably with out a GPU.
+- Ampere processors are the right CPUs platforms for AI inference
+   - This demo exists to prove Ampere can host the workloads people assume require GPUs.
+   - The whole stack is tuned for Ampere.
+- You don’t need GPUs for production AI vision workloads
+   - A single Arm64 CPU server run YOLOv11, multiple VLM instances, and LLM simultaneously in real time
+   - Q816 quantization delivers GPU class inference economics on Ampere hardware.
+   - Rethink your AI infrastructure budget - CPU inference is viable today
+- Multi-modal AI pipelines are practical, not just research demos
+   - 3 different model families (detector + VLM + LLM) coordinate in one application with sub-second latency
+   - Proves that the “compound AI system” pattern works 
+   - Stop thinking ofAI as one model per use case - orchestrate multiple specialized models.
+- Local/on-premise AI is fully capable 
+   - Everything runs in docker container
+   - Local inference is no longer a compromise vs. cloud APIs.
+- Vision language models unlock structured insight from raw video
+   - VLM extracts descriptive attributes that classical CV can’t do
+   - Show how to make VLM outputs reliable in production.
+- RAG works on live operational data, not just documents
+   - LLM answers fashion questions grounded in real-time tracking state, not a static knowledge base.
+   - Show how to engineer context windows for live data.
+- Open source models are enterprise ready
+   - Llama-3.2-3B, Qwen2.5-VL-3B, and YOLOv11 are all open source and can run locally
+   - Competitive with proprietary APIs for vertical use cases at a fraction of the cost
+   - Open models + smart engineering  > closed API dependency.
+- Real time fashion/retail analytics is a solved problem now
+   - Demographics, clothing trends, and natural language store intelligence - all from existing camera feeds
+   - No specialized hardware, no model training.
+   - Retail decision makers can deploy this class of analytics now.
+
+
+
+
+
+
+
+
+
 
 
 
