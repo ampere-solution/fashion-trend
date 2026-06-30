@@ -36,6 +36,7 @@ Alongside, a Fashion AI Assistant chat panel lets you ask natural-language quest
 
 ## Key Message - What are we trying to convince of?
 **Core message**
+
 A single Arm64 CPU server runs production grade, multi models, real time AI vision, LLM workloads locally, observably with out a GPU.
 - Ampere processors are the right CPUs platforms for AI inference
    - This demo exists to prove Ampere can host the workloads people assume require GPUs.
@@ -67,7 +68,28 @@ A single Arm64 CPU server runs production grade, multi models, real time AI visi
    - Retail decision makers can deploy this class of analytics now.
 
 
-
+## Proof Points - How does It Show This?
+- No GPUs needed for production AI vision
+   - Visible proof - 3 models status cards all show green simultaneously while video plays smoothly at 23.97 fps
+   - Architectural proof - docker-compose.yaml pins CPUs to docker container running 5 VLM instances, LLM, and YOLO - no Nvidia runtime, no CUDA dependency anywhere.
+   - Quantization proof:  llama.cpp base image and Q8R16 GGUF models are Ampere proprietary quant that only runs on Arm64 hardware.
+- Multi modal AI pipelines are practical
+   - Visible proof - video stream shows YOLO box labels, VLM gender/age tags updating live, and LLM answering chat questions. All three run concurrently 
+   - Latency proof - LLM card show TTFT, token/s, etc
+- Local/on-premise - no cloud required 
+   - Visible proof - application runs locally in docker containers 
+   - Config proof - zero API key environment variables.  use in-process llama-cpp-python
+- RAG works on live operational data
+   - Visible proof - rag context endpoint expose the live context feed to the LLM
+   - Interactive proof - RAG setting panel toggle on/off and watch LLM answers change accordingly.
+- Open source models are enterprise ready
+   - Visible proof - model dropdown list open source GGUFs model option exists.
+   - Answer quality proof - LLM responds to fashion queries are coherent, grounded in live data, returned in seconds. 
+- Real time fashion/retail analytics is a solved problem now
+   - Visible proof - clothing colors, gender, age group, clothing styles breakdowns updated live as people enter and leave the frames.
+   - Generality proof:  works on any input video in /app/videos
+ 
+## Running the Demo
 
 
 
